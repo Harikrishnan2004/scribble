@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>socket</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+        <style>
+            #right{
+                width: 900px;
+                margin-top: 2em;
+                padding: 0.5em;
+                background-color: rgb(28, 27, 27);
+                border-radius: 1em;
+            }
+            #left{
+                width: 500px;
+                padding: 1em;
+                background-color: rgb(28, 27, 27);
+                border-radius: 1em;
+                border-style: solid;
+                border-color: aqua;
+                margin-right: 2em;
+            }
+            body{
+                padding: 1em;
+                border-color: aqua;
+                background-color: rgb(36, 35, 35);
+            }
+            #room{
+                color:aqua;
+                display: inline-block;
+            }
+            #room_id{
+                margin-left: .3em;
+                color: azure;
+                display: inline-block;
+            }
+            #choose{
+                color: white;
+            }
+            #chooseword{
+                border-radius: 1em;
+                background-color: rgb(18, 17, 17);
+                border-color: rgb(18, 17, 17);
+                color: aqua;
+            }
+            #chooseword:hover{
+                border-radius: 1em;
+                background-color: aqua;
+                border-color: aqua;
+                color: black
+            }
+            #wordform{
+                display: none;
+                border-radius: 1em;
+                margin: 2em;
+                padding: 1em;
+                border-style: solid;
+                border-color: aquamarine;
+                background-color: rgb(16, 16, 16);
+            }
+            #lword1{
+                color: white;   
+            }
+            #lword2{
+                color: white;
+            }
+            #lword3{
+                color: white;
+            }
+            #wordsubmit{
+                margin-left: 2em;
+                background-color: black;
+                color: aquamarine;
+            }
+            #wordsubmit:hover{
+                margin-left: 2em;
+                background-color: black;
+                color: aquamarine;
+                border-color: greenyellow;
+            }
+            #scribble{
+                margin-bottom: 0.5em;
+                text-align: center;
+                border-radius: 1em;
+                background-color: aqua;
+                color: black;
+            }
+            #inputId{
+                text-align: center;
+                background-color: transparent;
+                border-radius: 1em;
+                border-style: solid;
+                border-color: aqua;
+                color:aliceblue;
+            }
+            #inputName{
+                text-align: center;
+                background-color: transparent;
+                border-radius: 1em;
+                border-style: solid;
+                border-color: aqua;
+                color:aliceblue;
+            }
+            #login_submit{
+                margin-left: 0.5em;
+                background-color: black;
+                color: white;
+                border-radius: 1em;
+            }
+            #login_submit:hover{
+                background-color: aqua;
+                color: black;
+                border-radius: 1em;
+            }
+            #chatform{
+                margin-top: 2em;
+            }
+            ::-webkit-scrollbar{
+                border-radius: 1em;
+            }
+            #chat{
+                color: white;
+                border-radius: 1em;
+                margin-top: 1em;
+                border-style: solid;
+                border-color: aliceblue;
+                padding: 1em;
+                overflow-y: scroll;
+                height:300px;
+            }
+            #inputChat{
+                text-align: center;
+                border-radius: 0.5em;
+                background-color: white;
+                border-style: solid;
+                border-color: black;
+            }
+            #inputChat:focus{
+                text-align: center;
+                border-radius: 0.5em;
+                background-color: transparent;
+                border-style: solid;
+                border-color: aqua;
+                color: white;
+            }
+            #chatsubmit{
+                text-align: center;
+                border-radius: 0.5em;
+                background-color: white;
+                border-style: solid;
+                border-color: black;
+                font-weight: bold;
+            }
+            #chatsubmit:hover{
+                text-align: center;
+                border-radius: 0.5em;
+                background-color: transparent;
+                border-style: solid;
+                border-color:aqua;
+                color:white;
+                font-weight: bold;
+            }
+            #points{
+                color: aqua;
+            }
+            #clear{
+                border-radius: 0.5em;
+                color: black;
+                background-color: aliceblue;
+                font-weight: bold;
+            }
+            #clear:hover{
+                border-radius: 0.5em;
+                color: black;
+                background-color: aqua;
+                font-weight: bolder;
+            }
+            #stroke{
+                margin-right: 1em;
+            }
+            #lineWidth{
+                margin-right: 1em;
+                border-radius: 1em;
+                text-align: center;
+            }
+            #drawing-board{
+                background-color: aliceblue;
+                margin-top: 1em;
+                border-radius: 1em;
+            }
+            #yourname{
+                color: aqua;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id = "container">
+            <div id = "left" class="d-inline-block">
+                <div id="login">
+                    <h1 id = "room">Roomid:</h1>
+                    <h2 id = "room_id"></h2>
+                    <form id="form">
+                        <input type = "number" id = "inputId" placeholder="RoomCode">
+                        <input type = "text" id = "inputName" placeholder="Name">
+                        <input type = "submit" id="login_submit">
+                    </form>
+                </div>
+
+                <p id = "yourname"></p>
+
+                <div id="pointdiv">
+                    <p id = "points"></p>
+                </div>
+
+                <div id = "choosediv">
+                    <h1 id = "choose">Choose a Word</h1>
+                    <button id = "chooseword"> Choose Word </button> 
+                </div>
+
+                <div id="timeout">TIME OUT</div>
+
+                <form id = "wordform">
+                    <input type="checkbox" id="word1" name="word">
+                    <label id = "lword1" for="word1">word1</label>
+                    <input type="checkbox" id="word2" name="word">
+                    <label id = "lword2" for="word2">word2</label>
+                    <input type="checkbox" id="word3" name="word">
+                    <label id = "lword3" for="word3">word3</label>
+                    <input type = "submit" id="wordsubmit" value="Conform">
+                </form>
+
+                <div id = "chat"></div>
+                <form id="chatform">
+                    <input type = "text" id = "inputChat" placeholder="Message">
+                    <input type = "submit" id="chatsubmit" value="send">
+                </form>
+            </div>
+            <div id = "right"   class="d-inline-block"> 
+
+            <section class="container">
+                <div id="toolbar">
+                    <h1 id="scribble">Scribble</h1>
+                    <label for="stroke" style = "color: aliceblue;">Stroke</label>
+                    <input id="stroke" name='stroke' type="color">
+                    <label for="lineWidth" style = "color: aliceblue;">Line Width</label>
+                    <input id="lineWidth" name='lineWidth' type="number" value="5">
+                    <button id="clear">Clear</button>
+                </div>
+                <div class="drawing-board">
+                    <canvas id="drawing-board"></canvas>
+                </div>
+            </section>
+            </div>
+        </div>
+
+        
+        
+        
+        <script src="socket.io/socket.io.js" ></script>
+        <script>
+
+            submit = 0;
+            let selectedWord;
+            let points = {};
+            var socket = io();
+            let Players = {};
+            let roomId = Math.floor(Math.random() * 10000);
+
+            document.querySelector("#room_id").innerHTML = `${roomId}`;
+            
+
+            document.querySelector("#form").onsubmit = function(){
+                let ename = document.querySelector("#inputName").value;
+                let eid = document.querySelector("#inputId").value;
+                document.querySelector("#yourname").innerHTML = `You: ${ename}`;
+                points[eid] = {};
+                points[eid][ename] = 0;
+                console.log(points[eid]);
+                Players[eid] = [ename];
+                console.log(ename);
+                console.log(eid);
+
+                socket.emit("info", {
+                    "roomId": eid,
+                    "name" : ename
+                });
+                document.querySelector("#form").style.display = "none";
+                return false;
+            }
+
+            socket.on("message",function(data){
+                if(data.chat === "Found the answer"){
+                    newmessage = document.createElement("div");
+                    newmessage.style.color = "red";
+                    newmessage.innerText = `${data.name} : ${data.chat}`;
+                    document.querySelector("#chat").appendChild(newmessage);
+                }
+                else{
+                    newmessage = document.createElement("div");
+                    newmessage.innerText = `${data.name} : ${data.chat}`;
+                    document.querySelector("#chat").appendChild(newmessage);
+                }
+            })
+
+            socket.on("chossenword",function(data){
+                selectedWord = data;
+                console.log(`selectedword: ${selectedWord}`);
+                
+            })
+
+            socket.on("score",function(data){
+                console.log(data);
+                document.querySelector("#points").innerHTML = JSON.stringify(data.scores[data.roomcode]);
+            })
+
+            socket.on("info",function(data){
+                roomcode = data.roomcode;
+                pname = data.name;
+                console.log(roomcode);
+                console.log(pname);
+
+                document.querySelector("#chatform").onsubmit = function(){
+                    
+                    document.querySelector("#chatform").style.visibility = "visible";
+                    chat = document.querySelector("#inputChat").value;
+                    console.log(selectedWord);
+                    if(chat === selectedWord){
+                        if(submit === 0){
+                            points[roomcode][pname] = points[roomcode][pname] + 50
+                            submit = submit + 1;
+                        }
+                        else if(submit === 1){
+                            points[roomcode][pname] = points[roomcode][pname] + 25
+                            submit = submit + 1;
+                        }
+                        else if(submit === 2){
+                            points[roomcode][pname] = points[roomcode][pname] + 10
+                            submit = submit + 1;
+                        }
+                        else{
+                            points[roomcode][pname] = points[roomcode][pname] + 5
+                            submit = submit + 1;
+                        }
+                        newmessage = document.createElement("div");
+                        newmessage.innerText = `you: correct answer`;
+                        newmessage.style.color = "rgb(53, 248, 14)";
+                        document.querySelector("#chat").appendChild(newmessage);
+                        console.log(chat);
+                        socket.emit("message", {
+                            "chat" : "Found the answer"
+                        });
+                        socket.emit("points",{
+                            "score": points,
+                            "roomcode": roomcode,
+                            "pname": pname
+                        });
+
+                        
+                    }
+                    else{
+                        console.log(chat);
+                        socket.emit("message", {
+                            "chat" : chat
+                        });
+                        socket.emit("points",{
+                            "score": points,
+                            "roomcode": roomcode,
+                            "pname":pname
+                        });
+                        newmessage = document.createElement("div");
+                        newmessage.innerText = `you: ${chat}`;
+                        document.querySelector("#chat").appendChild(newmessage);
+                    }
+                    console.log(points);
+                    return false
+                }
+            })
+
+            document.querySelector("#chooseword").onclick = function(){
+                document.querySelector("#wordform").style.display = "block";
+            }
+
+            const canvas = document.getElementById('drawing-board');
+            const toolbar = document.getElementById('toolbar');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = window.innerWidth - 700;
+            canvas.height = window.innerHeight - 300;
+
+            cwidth = window.innerWidth
+            cheight = window.innerHeight
+
+            let isPainting = false;
+            let lineWidth = 5;
+            let startX;
+            let startY;
+
+            toolbar.addEventListener('click', e => {
+                if (e.target.id === 'clear') {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+
+            toolbar.addEventListener('change', e => {
+                if(e.target.id === 'stroke') {
+                    ctx.strokeStyle = e.target.value;
+                }
+
+                if(e.target.id === 'lineWidth') {
+                    lineWidth = e.target.value;
+                }
+                
+            });
+
+            const draw = (e) => {
+                if(!isPainting) {
+                    return;
+                } 
+
+                socket.emit("mouse",{
+                    x: e.clientX,
+                    y: e.clientY
+                })
+                console.log(e.clientX);
+                console.log(e.clientY);
+
+                ctx.lineWidth = lineWidth;
+                ctx.lineCap = 'round';
+
+                ctx.lineTo(e.clientX - 575, e.clientY - 150);
+                ctx.stroke();
+            }
+
+            canvas.addEventListener('mousedown', (e) => {
+                isPainting = true;
+                startX = e.clientX;
+                startY = e.clientY;
+            });
+
+            canvas.addEventListener('mouseup', e => {
+                isPainting = false;
+                ctx.stroke();
+                ctx.beginPath();
+            });
+
+            canvas.addEventListener('mousemove', draw);
+
+            socket.on("mouse",function(cor){
+                console.log(`client ${cor.x}`);
+                x = cor.x + 20;
+                y = cor.y - 100;
+                ctx.lineWidth = lineWidth;
+                ctx.lineCap = 'round';
+
+                ctx.lineTo(x - 600, y - 50);
+                ctx.stroke();
+                ctx.beginPath();
+            });
+
+            words = {"commonWords":[
+                "a",
+                "able",
+                "about",
+                "absolute",
+                "accept",
+                "account",
+                "achieve",
+                "across",
+                "act",
+                "active",
+                "actual",
+                "add",
+                "address",
+                "admit",
+                "advertise",
+                "affect",
+                "afford",
+                "after",
+                "afternoon",
+                "again",
+                "against",
+                "age",
+                "agent",
+                "ago",
+                "agree",
+                "air",
+                "all",
+                "allow",
+                "almost",
+                "along",
+                "already",
+                "alright",
+                "also",
+                "although",
+                "always",
+                "america",
+                "amount",
+                "and",
+                "another",
+                "answer",
+                "any",
+                "apart",
+                "apparent",
+                "appear",
+                "apply",
+                "appoint",
+                "approach",
+                "appropriate",
+                "area",
+                "argue",
+                "arm",
+                "around",
+                "arrange",
+                "art",
+                "as",
+                "ask",
+                "associate",
+                "assume",
+                "at",
+                "attend",
+                "authority",
+                "available",
+                "aware",
+                "away",
+                "awful",
+                "baby",
+                "back",
+                "bad",
+                "bag",
+                "balance",
+                "ball",
+                "bank",
+                "bar",
+                "base",
+                "basis",
+                "be",
+                "bear",
+                "beat",
+                "beauty",
+                "because",
+                "become",
+                "bed",
+                "before",
+                "begin",
+                "behind",
+                "believe",
+                "benefit",
+                "best",
+                "bet",
+                "between",
+                "big",
+                "bill",
+                "birth",
+                "bit",
+                "black",
+                "bloke",
+                "blood",
+                "blow",
+                "blue",
+                "board",
+                "boat",
+                "body",
+                "book",
+                "both",
+                "bother",
+                "bottle",
+                "bottom",
+                "box",
+                "boy",
+                "break",
+                "brief",
+                "brilliant",
+                "bring",
+                "britain",
+                "brother",
+                "budget",
+                "build",
+                "bus",
+                "business",
+                "busy",
+                "but",
+                "buy",
+                "by",
+                "cake",
+                "call",
+                "can",
+                "car",
+                "card",
+                "care",
+                "carry",
+                "case",
+                "cat",
+                "catch",
+                "cause",
+                "cent",
+                "centre",
+                "certain",
+                "chair",
+                "chairman",
+                "chance",
+                "change",
+                "chap",
+                "character",
+                "charge",
+                "cheap",
+                "check",
+                "child",
+                "choice",
+                "choose",
+                "Christ",
+                "Christmas",
+                "church",
+                "city",
+                "claim",
+                "class",
+                "clean",
+                "clear",
+                "client",
+                "clock",
+                "close",
+                "closes",
+                "clothe",
+                "club",
+                "coffee",
+                "cold",
+                "colleague",
+                "collect",
+                "college",
+                "colour",
+                "come",
+                "comment",
+                "commit",
+                "committee",
+                "common",
+                "community",
+                "company",
+                "compare",
+                "complete",
+                "compute",
+                "concern",
+                "condition",
+                "confer",
+                "consider",
+                "consult",
+                "contact",
+                "continue",
+                "contract",
+                "control",
+                "converse",
+                "cook",
+                "copy",
+                "corner",
+                "correct",
+                "cost",
+                "could",
+                "council",
+                "count",
+                "country",
+                "county",
+                "couple",
+                "course",
+                "court",
+                "cover",
+                "create",
+                "cross",
+                "cup",
+                "current",
+                "cut",
+                "dad",
+                "danger",
+                "date",
+                "day",
+                "dead",
+                "deal",
+                "dear",
+                "debate",
+                "decide",
+                "decision",
+                "deep",
+                "definite",
+                "degree",
+                "department",
+                "depend",
+                "describe",
+                "design",
+                "detail",
+                "develop",
+                "die",
+                "difference",
+                "difficult",
+                "dinner",
+                "direct",
+                "discuss",
+                "district",
+                "divide",
+                "do",
+                "doctor",
+                "document",
+                "dog",
+                "door",
+                "double",
+                "doubt",
+                "down",
+                "draw",
+                "dress",
+                "drink",
+                "drive",
+                "drop",
+                "dry",
+                "due",
+                "during",
+                "each",
+                "early",
+                "east",
+                "easy",
+                "eat",
+                "economy",
+                "educate",
+                "effect",
+                "egg",
+                "eight",
+                "either",
+                "elect",
+                "electric",
+                "eleven",
+                "else",
+                "employ",
+                "encourage",
+                "end",
+                "engine",
+                "english",
+                "enjoy",
+                "enough",
+                "enter",
+                "environment",
+                "equal",
+                "especial",
+                "europe",
+                "even",
+                "evening",
+                "ever",
+                "every",
+                "evidence",
+                "exact",
+                "example",
+                "except",
+                "excuse",
+                "exercise",
+                "exist",
+                "expect",
+                "expense",
+                "experience",
+                "explain",
+                "express",
+                "extra",
+                "eye",
+                "face",
+                "fact",
+                "fair",
+                "fall",
+                "family",
+                "far",
+                "farm",
+                "fast",
+                "father",
+                "favour",
+                "feed",
+                "feel",
+                "few",
+                "field",
+                "fight",
+                "figure",
+                "file",
+                "fill",
+                "film",
+                "final",
+                "finance",
+                "find",
+                "fine",
+                "finish",
+                "fire",
+                "first",
+                "fish",
+                "fit",
+                "five",
+                "flat",
+                "floor",
+                "fly",
+                "follow",
+                "food",
+                "foot",
+                "for",
+                "force",
+                "forget",
+                "form",
+                "fortune",
+                "forward",
+                "four",
+                "france",
+                "free",
+                "friday",
+                "friend",
+                "from",
+                "front",
+                "full",
+                "fun",
+                "function",
+                "fund",
+                "further",
+                "future",
+                "game",
+                "garden",
+                "gas",
+                "general",
+                "germany",
+                "get",
+                "girl",
+                "give",
+                "glass",
+                "go",
+                "god",
+                "good",
+                "goodbye",
+                "govern",
+                "grand",
+                "grant",
+                "great",
+                "green",
+                "ground",
+                "group",
+                "grow",
+                "guess",
+                "guy",
+                "hair",
+                "half",
+                "hall",
+                "hand",
+                "hang",
+                "happen",
+                "happy",
+                "hard",
+                "hate",
+                "have",
+                "he",
+                "head",
+                "health",
+                "hear",
+                "heart",
+                "heat",
+                "heavy",
+                "hell",
+                "help",
+                "here",
+                "high",
+                "history",
+                "hit",
+                "hold",
+                "holiday",
+                "home",
+                "honest",
+                "hope",
+                "horse",
+                "hospital",
+                "hot",
+                "hour",
+                "house",
+                "how",
+                "however",
+                "hullo",
+                "hundred",
+                "husband",
+                "idea",
+                "identify",
+                "if",
+                "imagine",
+                "important",
+                "improve",
+                "in",
+                "include",
+                "income",
+                "increase",
+                "indeed",
+                "individual",
+                "industry",
+                "inform",
+                "inside",
+                "instead",
+                "insure",
+                "interest",
+                "into",
+                "introduce",
+                "invest",
+                "involve",
+                "issue",
+                "it",
+                "item",
+                "jesus",
+                "job",
+                "join",
+                "judge",
+                "jump",
+                "just",
+                "keep",
+                "key",
+                "kid",
+                "kill",
+                "kind",
+                "king",
+                "kitchen",
+                "knock",
+                "know",
+                "labour",
+                "lad",
+                "lady",
+                "land",
+                "language",
+                "large",
+                "last",
+                "late",
+                "laugh",
+                "law",
+                "lay",
+                "lead",
+                "learn",
+                "leave",
+                "left",
+                "leg",
+                "less",
+                "let",
+                "letter",
+                "level",
+                "lie",
+                "life",
+                "light",
+                "like",
+                "likely",
+                "limit",
+                "line",
+                "link",
+                "list",
+                "listen",
+                "little",
+                "live",
+                "load",
+                "local",
+                "lock",
+                "london",
+                "long",
+                "look",
+                "lord",
+                "lose",
+                "lot",
+                "love",
+                "low",
+                "luck",
+                "lunch",
+                "machine",
+                "main",
+                "major",
+                "make",
+                "man",
+                "manage",
+                "many",
+                "mark",
+                "market",
+                "marry",
+                "match",
+                "matter",
+                "may",
+                "maybe",
+                "mean",
+                "meaning",
+                "measure",
+                "meet",
+                "member",
+                "mention",
+                "middle",
+                "might",
+                "mile",
+                "milk",
+                "million",
+                "mind",
+                "minister",
+                "minus",
+                "minute",
+                "miss",
+                "mister",
+                "moment",
+                "monday",
+                "money",
+                "month",
+                "more",
+                "morning",
+                "most",
+                "mother",
+                "motion",
+                "move",
+                "mrs",
+                "much",
+                "music",
+                "must",
+                "name",
+                "nation",
+                "nature",
+                "near",
+                "necessary",
+                "need",
+                "never",
+                "new",
+                "news",
+                "next",
+                "nice",
+                "night",
+                "nine",
+                "no",
+                "non",
+                "none",
+                "normal",
+                "north",
+                "not",
+                "note",
+                "notice",
+                "now",
+                "number",
+                "obvious",
+                "occasion",
+                "odd",
+                "of",
+                "off",
+                "offer",
+                "office",
+                "often",
+                "okay",
+                "old",
+                "on",
+                "once",
+                "one",
+                "only",
+                "open",
+                "operate",
+                "opportunity",
+                "oppose",
+                "or",
+                "order",
+                "organize",
+                "original",
+                "other",
+                "otherwise",
+                "ought",
+                "out",
+                "over",
+                "own",
+                "pack",
+                "page",
+                "paint",
+                "pair",
+                "paper",
+                "paragraph",
+                "pardon",
+                "parent",
+                "park",
+                "part",
+                "particular",
+                "party",
+                "pass",
+                "past",
+                "pay",
+                "pence",
+                "pension",
+                "people",
+                "per",
+                "percent",
+                "perfect",
+                "perhaps",
+                "period",
+                "person",
+                "photograph",
+                "pick",
+                "picture",
+                "piece",
+                "place",
+                "plan",
+                "play",
+                "please",
+                "plus",
+                "point",
+                "police",
+                "policy",
+                "politic",
+                "poor",
+                "position",
+                "positive",
+                "possible",
+                "post",
+                "pound",
+                "power",
+                "practise",
+                "prepare",
+                "present",
+                "press",
+                "pressure",
+                "presume",
+                "pretty",
+                "previous",
+                "price",
+                "print",
+                "private",
+                "probable",
+                "problem",
+                "proceed",
+                "process",
+                "produce",
+                "product",
+                "programme",
+                "project",
+                "proper",
+                "propose",
+                "protect",
+                "provide",
+                "public",
+                "pull",
+                "purpose",
+                "push",
+                "put",
+                "quality",
+                "quarter",
+                "question",
+                "quick",
+                "quid",
+                "quiet",
+                "quite",
+                "radio",
+                "rail",
+                "raise",
+                "range",
+                "rate",
+                "rather",
+                "read",
+                "ready",
+                "real",
+                "realise",
+                "really",
+                "reason",
+                "receive",
+                "recent",
+                "reckon",
+                "recognize",
+                "recommend",
+                "record",
+                "red",
+                "reduce",
+                "refer",
+                "regard",
+                "region",
+                "relation",
+                "remember",
+                "report",
+                "represent",
+                "require",
+                "research",
+                "resource",
+                "respect",
+                "responsible",
+                "rest",
+                "result",
+                "return",
+                "rid",
+                "right",
+                "ring",
+                "rise",
+                "road",
+                "role",
+                "roll",
+                "room",
+                "round",
+                "rule",
+                "run",
+                "safe",
+                "sale",
+                "same",
+                "saturday",
+                "save",
+                "say",
+                "scheme",
+                "school",
+                "science",
+                "score",
+                "scotland",
+                "seat",
+                "second",
+                "secretary",
+                "section",
+                "secure",
+                "see",
+                "seem",
+                "self",
+                "sell",
+                "send",
+                "sense",
+                "separate",
+                "serious",
+                "serve",
+                "service",
+                "set",
+                "settle",
+                "seven",
+                "sex",
+                "shall",
+                "share",
+                "she",
+                "sheet",
+                "shoe",
+                "shoot",
+                "shop",
+                "short",
+                "should",
+                "show",
+                "shut",
+                "sick",
+                "side",
+                "sign",
+                "similar",
+                "simple",
+                "since",
+                "sing",
+                "single",
+                "sir",
+                "sister",
+                "sit",
+                "site",
+                "situate",
+                "six",
+                "size",
+                "sleep",
+                "slight",
+                "slow",
+                "small",
+                "smoke",
+                "so",
+                "social",
+                "society",
+                "some",
+                "son",
+                "soon",
+                "sorry",
+                "sort",
+                "sound",
+                "south",
+                "space",
+                "speak",
+                "special",
+                "specific",
+                "speed",
+                "spell",
+                "spend",
+                "square",
+                "staff",
+                "stage",
+                "stairs",
+                "stand",
+                "standard",
+                "start",
+                "state",
+                "station",
+                "stay",
+                "step",
+                "stick",
+                "still",
+                "stop",
+                "story",
+                "straight",
+                "strategy",
+                "street",
+                "strike",
+                "strong",
+                "structure",
+                "student",
+                "study",
+                "stuff",
+                "stupid",
+                "subject",
+                "succeed",
+                "such",
+                "sudden",
+                "suggest",
+                "suit",
+                "summer",
+                "sun",
+                "sunday",
+                "supply",
+                "support",
+                "suppose",
+                "sure",
+                "surprise",
+                "switch",
+                "system",
+                "table",
+                "take",
+                "talk",
+                "tape",
+                "tax",
+                "tea",
+                "teach",
+                "team",
+                "telephone",
+                "television",
+                "tell",
+                "ten",
+                "tend",
+                "term",
+                "terrible",
+                "test",
+                "than",
+                "thank",
+                "the",
+                "then",
+                "there",
+                "therefore",
+                "they",
+                "thing",
+                "think",
+                "thirteen",
+                "thirty",
+                "this",
+                "thou",
+                "though",
+                "thousand",
+                "three",
+                "through",
+                "throw",
+                "thursday",
+                "tie",
+                "time",
+                "to",
+                "today",
+                "together",
+                "tomorrow",
+                "tonight",
+                "too",
+                "top",
+                "total",
+                "touch",
+                "toward",
+                "town",
+                "trade",
+                "traffic",
+                "train",
+                "transport",
+                "travel",
+                "treat",
+                "tree",
+                "trouble",
+                "true",
+                "trust",
+                "try",
+                "tuesday",
+                "turn",
+                "twelve",
+                "twenty",
+                "two",
+                "type",
+                "under",
+                "understand",
+                "union",
+                "unit",
+                "unite",
+                "university",
+                "unless",
+                "until",
+                "up",
+                "upon",
+                "use",
+                "usual",
+                "value",
+                "various",
+                "very",
+                "video",
+                "view",
+                "village",
+                "visit",
+                "vote",
+                "wage",
+                "wait",
+                "walk",
+                "wall",
+                "want",
+                "war",
+                "warm",
+                "wash",
+                "waste",
+                "watch",
+                "water",
+                "way",
+                "we",
+                "wear",
+                "wednesday",
+                "wee",
+                "week",
+                "weigh",
+                "welcome",
+                "well",
+                "west",
+                "what",
+                "when",
+                "where",
+                "whether",
+                "which",
+                "while",
+                "white",
+                "who",
+                "whole",
+                "why",
+                "wide",
+                "wife",
+                "will",
+                "win",
+                "wind",
+                "window",
+                "wish",
+                "with",
+                "within",
+                "without",
+                "woman",
+                "wonder",
+                "wood",
+                "word",
+                "work",
+                "world",
+                "worry",
+                "worse",
+                "worth",
+                "would",
+                "write",
+                "wrong",
+                "year",
+                "yes",
+                "yesterday",
+                "yet",
+                "you",
+                "young",
+                "meet",
+                "member",
+                "mention",
+                "middle",
+                "might",
+                "mile",
+                "milk",
+                "million",
+                "mind",
+                "minister",
+                "minus",
+                "minute",
+                "miss",
+                "mister",
+                "moment",
+                "monday",
+                "money",
+                "month",
+                "more",
+                "morning",
+                "most",
+                "mother"
+              ]
+          }
+
+          socket.on("signal",function(data){
+            console.log("timeout");
+            document.querySelector("#timeout").style.visibility = "visible";
+          })
+
+          let index = Math.floor(Math.random() * 1000);
+          document.querySelector("#lword1").innerHTML = words.commonWords[index];
+          document.querySelector("#lword2").innerHTML = words.commonWords[index-1];
+          document.querySelector("#lword3").innerHTML = words.commonWords[index-2];
+          document.querySelector("#word1").value = words.commonWords[index];
+          document.querySelector("#word2").value = words.commonWords[index-1];
+          document.querySelector("#word3").value = words.commonWords[index-2];
+
+          let options = document.querySelector("#wordform");
+          console.log(options.length);
+          document.querySelector("#wordform").onsubmit = function(){
+                for(let i=0; i < options.length; i++){
+                    if(options[i].checked){
+                        socket.emit("chossenword",options[i].value);
+                    }
+                }
+                document.querySelector("#wordform").style.display = "none";
+                document.querySelector("#timeout").style.color = "red";
+                document.querySelector("#timeout").style.visibility = "hidden";
+                socket.emit("signal", 0);
+                return false;
+          }
+        </script>
+    </body>
+</html>
